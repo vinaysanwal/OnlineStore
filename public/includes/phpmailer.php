@@ -63,10 +63,10 @@ $mail->Password = '';                           // SMTP password
 $mail->SMTPSecure = 'ssl';                            // Enable TLS encryption, `ssl` also accepted
 $mail->Port = 465;                                    // TCP port to connect to
 
-$mail->setFrom('contact@paulamissah.xyz', 'Message from Virtualine.Com ');
+$mail->setFrom('sanwalvinay@gmail.com', 'Message from onlinestalkers.Com ');
 $mail->addAddress($client_email, $client_name);     // Add a recipient
 //$mail->addAddress('ellen@example.com');               // Name is optional
-$mail->addReplyTo('no-reply@virtualines.com', 'Payment Details');
+$mail->addReplyTo('no-reply@onlinestalkers.com', 'Payment Details');
 //$mail->addCC('cc@example.com');
 //$mail->addBCC('bcc@example.com');
 
