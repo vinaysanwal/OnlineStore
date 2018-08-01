@@ -98,6 +98,7 @@ function display_msg(){
 
 function process_registration(){
 
+
   if(isset($_POST['submit_registration'])){
     $raw_name = clean($_POST['name']);
     $raw_sex =  clean($_POST['sex']);
@@ -141,12 +142,25 @@ function process_registration(){
 
       $folder = "uploaded_image/";
 
-      if(move_uploaded_file($temp_folder , $folder.$cl_image))
-      {
-           require_once('pdo.php');
+      require_once('pdo.php');
 
-            //Instatiating our object from dbase class
-            $db = new dbase;
+       //Instatiating our object from dbase class
+       $db = new dbase;
+       //no same data exist
+       $db->query('SELECT * FROM users WHERE email = :email');
+
+       $db->bind(':email', $cl_email , PDO::PARAM_STR);
+
+       $get_user = $db->fetchSingle();
+       if($get_user > 0){
+         redirect('login.php');
+
+         set_msg('<div class="alert alert-danger">
+         <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+         <strong>Hey</strong>Already Registered!!!</div>');
+       }elseif(move_uploaded_file($temp_folder , $folder.$cl_image))
+      {
+
             $db->query('INSERT INTO users(id, fullname,sex, password, image, email) VALUES(NULL, :fullname, :sex, :password, :image, :email) ');
 
             $db->bind(':fullname', $cl_name , PDO::PARAM_STR);
@@ -176,6 +190,55 @@ function process_registration(){
   }
 }
 
+function login_user(){
 
+  if(isset($_POST['submit_login'])){
+
+    $raw_email = clean($_POST['email']);
+    $raw_password = clean($_POST['password']);
+
+    $cl_email = val_email($raw_email);
+    $cl_password = santize($raw_password);
+
+    $hashed_password = hash_pwd($cl_password);
+
+    require_once('pdo.php');
+
+     //Instatiating our object from dbase class
+     $db = new dbase;
+
+     $db->query('SELECT * FROM users WHERE email = :email AND password = :password');
+
+     $db->bind(':email', $cl_email , PDO::PARAM_STR);
+     $db->bind(':password', $hashed_password , PDO::PARAM_STR);
+
+
+     $get_user = $db->fetchSingle();
+
+     if($get_user > 0){
+           $image_name = $get_user['image'];
+           $image_path = "<img src='uploaded_image/$image_name' class='profile_image' />";
+
+           redirect('user-account.php');
+
+           $_SESSION['user_logged_in'] = true;
+           $_SESSION['user_data'] = array(
+             'fullname' => $get_user['fullname'],
+             'id' => $get_user['id'],
+             'email' => $get_user['email'],
+             'image' => $image_path
+           );
+
+
+     }else {
+       redirect('login.php');
+
+       set_msg('<div class="alert alert-danger text-center">
+       <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+       <strong>Sorry</strong>Please Register yourself</div>');
+     }
+
+  }
+}
 
 ?>

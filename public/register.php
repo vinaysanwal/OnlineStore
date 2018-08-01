@@ -2,6 +2,15 @@
 include('includes/header.php');
 include('includes/config.php');
 
+if(isset($_SESSION['user_logged_in'])){
+
+  redirect('user-account.php');
+
+}else{
+  //redirect('login.php');
+}
+
+
 ?>
 
     <div class="row">

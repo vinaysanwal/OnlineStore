@@ -1,7 +1,15 @@
 <?php include('includes/header.php');
     include('includes/config.php');
-?>
 
+    if(isset($_SESSION['user_logged_in'])){
+
+      redirect('user-account.php');
+
+    }else{
+      //redirect('login.php');
+    }
+
+?>
 
   <div class="row">
       <div class="col-md-6 col-md-offset-3">
@@ -10,7 +18,7 @@
       <div class="col-md-4 col-md-offset-4">
         <?php display_msg(); ?>
        <p class=""><a class="pull-right" href="register.php"> Register</a></p><br>
-        <form class="form-horizontal" role="form" method="post" action="">
+        <form class="form-horizontal" role="form" method="post" action="<?php login_user(); ?>">
           <div class="form-group">
             <label class="control-label col-sm-2" for="email"></label>
             <div class="col-sm-10">
